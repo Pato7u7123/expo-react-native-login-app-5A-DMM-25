@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -8,21 +8,20 @@ import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
-import SelectDropdown from 'react-native-select-dropdown'
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { CustomDropDownList } from '../components/CustomDropDownList'
 
 export function ArticleScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
   const [description, setDescription] = useState({ value: '', error: '' })
-  const [selectedType, setSelectedType] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedType, setSelectedType] = useState(null)
+  const [selectedState, setSelectedState] = useState(null)
+  const [selectedLocation, setSelectedLocation] = useState(null)
 
   const itemTypes = [
     { title: 'Mobiliario de oficina' },
     { title: 'Equipo de cómputo' },
     { title: 'Otros' },
-  ];
+  ]
 
   const itemState = [
     { title: 'Sin determinar' },
@@ -30,18 +29,19 @@ export function ArticleScreen({ navigation }) {
     { title: 'Regular' },
     { title: 'Buen estado' },
     { title: 'Excelente estado' },
-  ];
+  ]
 
   const locations = [
     { title: 'Almacén' },
     { title: 'Recepción' },
-  ];
+  ]
 
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Agregar artículo</Header>
+
       <TextInput
         label="Nombre del artículo"
         returnKeyType="next"
@@ -50,6 +50,7 @@ export function ArticleScreen({ navigation }) {
         error={!!name.error}
         errorText={name.error}
       />
+
       <TextInput
         label="Descripción general"
         returnKeyType="next"
@@ -58,83 +59,29 @@ export function ArticleScreen({ navigation }) {
         error={!!description.error}
         errorText={description.error}
       />
-      
-      {[{ data: itemTypes, state: selectedType, setState: setSelectedType, placeholder: 'Seleccionar tipo de artículo' },
-        { data: itemState, state: selectedState, setState: setSelectedState, placeholder: 'Seleccionar estado del artículo' },
-        { data: locations, state: selectedLocation, setState: setSelectedLocation, placeholder: 'Seleccionar ubicación' }].map((dropdown, index) => (
-        <SelectDropdown
-          key={index}
-          data={dropdown.data}
-          onSelect={(selectedItem) => dropdown.setState(selectedItem)}
-          renderButton={(selectedItem, isOpened) => (
-            <View style={styles.dropdownButtonStyle}>
-              <Text style={styles.dropdownButtonTxtStyle}>
-                {(selectedItem && selectedItem.title) || dropdown.placeholder}
-              </Text>
-              <Ionicons 
-                name={isOpened ? 'chevron-up' : 'chevron-down'} 
-                size={20} 
-                color="#151E26" 
-                style={styles.dropdownButtonArrowStyle}
-              />
-            </View>
-          )}
-          renderItem={(item, index, isSelected) => (
-            <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: theme.colors.primaryLight }) }}>
-              <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-            </View>
-          )}
-          buttonStyle={styles.customDropdownButton}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
-      ))}
+
+      <CustomDropDownList
+        data={itemTypes}
+        placeholder="Seleccionar tipo de artículo"
+        selectedValue={selectedType}
+        setSelectedValue={setSelectedType}
+      />
+
+      <CustomDropDownList
+        data={itemState}
+        placeholder="Seleccionar estado del artículo"
+        selectedValue={selectedState}
+        setSelectedValue={setSelectedState}
+      />
+
+      <CustomDropDownList
+        data={locations}
+        placeholder="Seleccionar ubicación"
+        selectedValue={selectedLocation}
+        setSelectedValue={setSelectedLocation}
+      />
 
       <Button mode="contained" style={{ marginTop: 24 }}>Guardar artículo</Button>
     </Background>
   )
 }
-
-const styles = StyleSheet.create({
-  dropdownButtonStyle: {
-    width: '100%',
-    height: 50,
-    backgroundColor: theme.colors.surface,
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-  },
-  dropdownButtonTxtStyle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-    color: theme.colors.text,
-  },
-  dropdownButtonArrowStyle: {
-    fontSize: 20,
-  },
-  dropdownMenuStyle: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-  },
-  dropdownItemStyle: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  dropdownItemTxtStyle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: theme.colors.text,
-  },
-  customDropdownButton: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-  },
-});
